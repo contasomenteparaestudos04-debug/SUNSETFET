@@ -1,0 +1,12 @@
+bin/
+obj/
+.vs/
+*.user
+.dart_tool/
+build/
+.idea/
+.flutter-plugins*
+.packages
+pubspec.lock
+# pastas temporarias que nao sobem
+_para_apagar*
