@@ -1,3 +1,4 @@
+using Sunset.Api;
 using Microsoft.EntityFrameworkCore;
 using Sunset.Negocio;
 using Sunset.Repositorio;
@@ -35,7 +36,26 @@ builder.Services.AddScoped<RelatorioNegocio>();
 // Cada entidade nova ganha duas linhas aqui: uma de repositório e uma de negócio.
 // --------------------------------------------
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opcoes =>
+        MensagensPtBr.Aplicar(opcoes.ModelBindingMessageProvider))
+    .ConfigureApiBehaviorOptions(opcoes =>
+    {
+        // Erro de validação sai no mesmo formato dos outros erros da Api: {"erro": "mensagem"}.
+        // Assim o app Flutter mostra sempre uma mensagem em português.
+        opcoes.InvalidModelStateResponseFactory = contexto =>
+        {
+            var mensagem = contexto.ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m));
+
+            // Erro de JSON mal formado vem em inglês do .NET; nesse caso usamos um texto nosso.
+            if (mensagem == null || mensagem.Contains("JSON") || mensagem.Contains("could not"))
+                mensagem = "Dados inválidos. Confira os campos e tente de novo.";
+
+            return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(new { erro = mensagem });
+        };
+    });
 
 // CORS: deixa o app Flutter rodando no navegador (outra porta) chamar a Api.
 // Para o PIM está liberado para qualquer origem; num sistema real ficaria restrito.

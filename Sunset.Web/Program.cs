@@ -1,3 +1,4 @@
+using Sunset.Web;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Sunset.Negocio;
@@ -30,7 +31,9 @@ builder.Services.AddScoped<UsuarioNegocio>();
 builder.Services.AddScoped<RelatorioNegocio>();
 // --------------------------------------------
 
-builder.Services.AddControllersWithViews();
+// Troca as mensagens padrão de erro de conversão (inglês) por português.
+builder.Services.AddControllersWithViews(opcoes =>
+    MensagensPtBr.Aplicar(opcoes.ModelBindingMessageProvider));
 
 // Login por cookie: depois de entrar, o navegador guarda um cookie com id, nome e perfil.
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

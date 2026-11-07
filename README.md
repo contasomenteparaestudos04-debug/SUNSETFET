@@ -60,12 +60,11 @@ Sunset.Api  ──┘
 - `Sunset.Web`: site MVC
 - `Sunset.Api`: Web API REST
 - `sunset_app/`: aplicativo Flutter, que consome a Web API
-- `banco/`: `script_banco.sql`, `dados_exemplo.sql` e `testes.sql`
-- `docs/`: documentação do PIM, roteiros de apresentação e resultados dos testes
+- `banco/`: `script_banco.sql`, `dados.sql` e `testes.sql`
 - `prints/`: prints das telas (computador, celular e aplicativo)
-- `iniciar-sistema/`: scripts para subir tudo no Windows
+- `sistema/`: scripts para subir tudo no Windows
 
-A Web e a Api não acessam o banco direto. Todo acesso passa pela camada de Negócio, e as dependências são registradas por injeção de dependência no `Program.cs` (explicado em `INJECAO-DE-DEPENDENCIA.md`). A connection string fica só no `appsettings.json`.
+A Web e a Api não acessam o banco direto. Todo acesso passa pela camada de Negócio, e as dependências são registradas por injeção de dependência no `Program.cs` (explicado em `INJECAODEPENDENCIA.md`). A connection string fica só no `appsettings.json`.
 
 ## Como rodar
 
@@ -80,7 +79,7 @@ dotnet ef database update --project Sunset.Repositorio --startup-project Sunset.
 
 Se o seu SQL Server tiver outro nome, mude a connection string em `Sunset.Api/appsettings.json` e em `Sunset.Web/appsettings.json`.
 
-2. (Opcional) Dados de exemplo, no SSMS ou no Azure Data Studio: rodar `banco/dados_exemplo.sql`.
+2. (Opcional) Dados de exemplo, no SSMS ou no Azure Data Studio: rodar `banco/dados.sql`.
 
 3. Subir a Api (porta 5218):
 
@@ -108,12 +107,12 @@ flutter run -d chrome
 
 No emulador Android o app usa o endereço `10.0.2.2:5218` (o PC visto pelo emulador). Esse endereço fica em `ServicoApi.urlBase`.
 
-No Windows também dá para dar duplo clique em `iniciar-sistema/iniciar_tudo.bat`, que cria o banco, insere os dados de exemplo e abre a Api, o site e o app. Esses scripts não foram testados no computador de todos do grupo. Se algum passo falhar, a mensagem aparece na janela e os comandos acima resolvem.
+No Windows também dá para dar duplo clique em `sistema/iniciar.bat`, que cria o banco, insere os dados de exemplo e abre a Api, o site e o app. Esses scripts não foram testados no computador de todos do grupo. Se algum passo falhar, a mensagem aparece na janela e os comandos acima resolvem.
 
 ## Logins para teste
 
 - Administrador: `admin@sunset.com` / `Admin@1234`
-- Clientes e gestor (depois de rodar `dados_exemplo.sql`): `amanda.r@gmail.com`, `bruno.os@outlook.com` e `mariana.costa@hotmail.com`, todos com a senha `Senha1234`
+- Clientes e gestor (depois de rodar `dados.sql`): `amanda.r@gmail.com`, `bruno.os@outlook.com` e `mariana.costa@hotmail.com`, todos com a senha `Senha1234`
 
 ## Banco de dados
 
@@ -130,11 +129,9 @@ As chaves estrangeiras não têm exclusão em cascata. O arquivo `banco/testes.s
 
 Os resultados estão em `docs/RESULTADOSTESTES.md`. Passaram: migration e banco, regras de negócio (programa de teste local), Api com o SQL Server, site nos três perfis, responsividade e aplicativo no navegador (`flutter analyze` e `flutter test`).
 
-## Limitações
+## Features simuladas
 
 - A Api não usa token (JWT): o aplicativo manda o id do usuário nas chamadas
 - O Pix é simulado, e o QR code é uma imagem de exemplo
-- Cancelar uma reserva já paga não faz estorno
-- Não implementamos Machine Learning. A análise de dados é o relatório em TXT
 - O VLibras está só no site, não no aplicativo
 
